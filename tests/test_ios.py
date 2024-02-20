@@ -3,7 +3,7 @@ from appium.webdriver.common.appiumby import AppiumBy
 from selene import browser, have
 
 
-def test_ios(ios_management):
+def test_ios(setup_ios):
     with step('Click button'):
         browser.element((AppiumBy.ACCESSIBILITY_ID, "Text Button")).click()
 

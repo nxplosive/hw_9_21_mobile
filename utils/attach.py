@@ -1,17 +1,24 @@
-# import os
-
 import allure
 import requests
-# from dotenv import load_dotenv
-from selene import browser
+from allure_commons.types import AttachmentType
+
 from utils.settings import config
 
-# load_dotenv()
-# login = os.environ.get('USER_NAME')
-# access_key = os.environ.get('ACCESS_KEY')
+
+def add_screenshot(browser):
+    png = browser.driver.get_screenshot_as_png()
+    allure.attach(body=png, name='screenshot', attachment_type=AttachmentType.PNG, extension='.png')
 
 
-def attach_bstack_video(session_id):
+def add_xml(browser):
+    allure.attach(
+        browser.driver.page_source,
+        name='screen xml dump',
+        attachment_type=allure.attachment_type.XML,
+    )
+
+
+def add_video(browser):
     session_id = browser.driver.session_id
     bstack_session = requests.get(
         f'https://api.browserstack.com/app-automate/sessions/{session_id}.json',
@@ -28,20 +35,4 @@ def attach_bstack_video(session_id):
         '</body></html>',
         name='video recording',
         attachment_type=allure.attachment_type.HTML,
-    )
-
-
-def attach_screenshot():
-    allure.attach(
-        browser.driver.get_screenshot_as_png(),
-        name='screenshot',
-        attachment_type=allure.attachment_type.PNG,
-    )
-
-
-def attach_logs():
-    allure.attach(
-        browser.driver.page_source,
-        name='screen xml dump',
-        attachment_type=allure.attachment_type.XML,
     )

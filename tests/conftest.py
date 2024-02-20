@@ -1,21 +1,16 @@
-# import os
-
 import allure
 import pytest
 from appium import webdriver
 from appium.options.android import UiAutomator2Options
 from appium.options.ios import XCUITestOptions
-# from dotenv import load_dotenv
 from selene import browser
+
+from utils import attach
 from utils.settings import config
 
-# load_dotenv()
-# login = os.environ.get('USER_NAME')
-# access_key = os.environ.get('ACCESS_KEY')
 
-
-@pytest.fixture(scope='function', autouse=True)
-def android_management():
+@pytest.fixture()
+def setup_android():
     options = UiAutomator2Options().load_capabilities({
         "platformName": "android",
         "platformVersion": "9.0",
@@ -27,7 +22,6 @@ def android_management():
             "projectName": "First Python project",
             "buildName": "browserstack-build-1",
             "sessionName": "BStack first_test",
-
             "userName": config.login,
             "accessKey": config.access_key
         }
@@ -37,16 +31,16 @@ def android_management():
         browser.config.driver = webdriver.Remote('http://hub.browserstack.com/wd/hub', options=options)
 
     yield
-    # attach.attach_screenshot(browser)
-    # attach.attach_logs(browser)
-    # attach.attach_bstack_video(browser)
-    #
-    # with allure.step("Tear down"):
-    browser.quit()
+    attach.add_screenshot(browser)
+    attach.add_xml(browser)
+    attach.add_video(browser)
+
+    with allure.step("Tear down"):
+        browser.quit()
 
 
-@pytest.fixture(scope='function', autouse=True)
-def ios_management():
+@pytest.fixture()
+def setup_ios():
     options = XCUITestOptions().load_capabilities({
         # Set URL of the application under test
         "app": "bs://sample.app",
@@ -70,9 +64,9 @@ def ios_management():
         browser.config.driver = webdriver.Remote('http://hub.browserstack.com/wd/hub', options=options)
 
     yield
-    # attach.attach_screenshot(browser)
-    # attach.attach_logs(browser)
-    # attach.attach_bstack_video(browser)
+    attach.add_screenshot(browser)
+    attach.add_xml(browser)
+    attach.add_video(browser)
 
-    # with allure.step("Tear down"):
-    browser.quit()
+    with allure.step("Tear down"):
+        browser.quit()
