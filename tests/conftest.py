@@ -6,7 +6,7 @@ from appium.options.ios import XCUITestOptions
 from selene import browser
 
 from utils import attach
-from utils.settings import config
+from settings import config
 
 
 @pytest.fixture()
